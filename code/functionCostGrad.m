@@ -1,0 +1,49 @@
+function [cost, grad] = functionCostGrad(theta, model, params, data)
+    
+if model == 6
+    [cost, grad] = SingleWordPPHeadDistCostDispatcher(theta, params, data);
+else
+    error('Error', ['unknown model ' num2str(model) ' in functionCostGrad()']);
+end
+    
+    
+end
+
+
+function [cost, grad] = SingleWordPPHeadDistCostDispatcher(theta, params, data)
+
+
+if params.updateWordVectors
+    if params.useExt
+        prepsExt = data.preps(params.inputSize+1:end,:);
+        ppChildrenExt = data.ppChildren(params.inputSize+1:end,:);
+        headsExt = data.heads(params.inputSize+1:end,:,:);
+        [cost, grad] = SingleWordPPHeadDistDropoutUpdateWordVectorsExtCost(theta, ...
+                              params.inputSize, params.extDim, params.beta, params.dropout, ...
+                              params.maxNumHeads, data.labels, data.nheads, params.scaleVectors, ...
+                              params.vocabSize, ...
+                              data.indPrepsToWordVectors, data.indHeadsToWordVectors, data.indChildrenToWordVectors, ...
+                              prepsExt, headsExt, ppChildrenExt);            
+    else            
+        [cost, grad] = SingleWordPPHeadDistDropoutUpdateWordVectorsCost(theta, ...
+                              params.inputSize, params.beta, params.dropout, ...
+                              params.maxNumHeads, data.labels, data.nheads, params.scaleVectors, ...
+                              params.vocabSize, ...
+                              data.indPrepsToWordVectors, data.indHeadsToWordVectors, data.indChildrenToWordVectors);
+    end
+else                
+    if params.updateExt
+        [cost, grad] = SingleWordPPHeadDistDropoutUpdateExtCost(theta, params.inputSize+params.extDim, params.extDim, ...
+                              params.beta, params.dropout, ...
+                              params.maxNumHeads, data.heads, data.preps, ...
+                              data.ppChildren, data.labels, data.nheads, params.scaleVectors);                            
+    else
+        [cost, grad] = SingleWordPPHeadDistDropoutCost(theta, params.inputSize+params.extDim, ...
+                              params.beta, params.dropout, ...
+                              params.maxNumHeads, data.heads, data.preps, ...
+                              data.ppChildren, data.labels, data.nheads, params.scaleVectors);        
+    end
+end
+
+
+end

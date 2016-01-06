@@ -1,0 +1,10 @@
+==========
+12.26.2015: Initial version
+
+=========
+5.14.2015: Bug fix in run.m:
+63c63
+<         wordVectors = filterWordVectors(wordVectors, model, params, filenames);
+---
+>         wordVecotrs = filterWordVectors(wordVectors, model, params, filenames);
+Thanks to Evan Jaffe for pointing out this bug. 

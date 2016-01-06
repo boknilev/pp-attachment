@@ -1,0 +1,156 @@
+function run(language)
+
+% Runner file
+
+% what to do?
+loadDataFlag = true;
+trainFlag = true;
+testFlag = true;
+checkGradientFlag = false;
+usePretrainedParams = false;
+usePretrainedSumSquares = false;
+usePretrainedWordVectors = false;
+
+
+
+%% Set parameters
+params.language = language; disp(['language: ' params.language]); % english/arabic
+params.inputSize = 100; disp(['input size: ' num2str(params.inputSize)]); % dimensionality of word vectors
+params.maxNumHeads = 10;
+params.scaleParam = 1; 
+params.scaleVectors = 1; 
+params.updateWordVectors = false; if params.updateWordVectors; disp('updating word vectors'); end;
+params.updateWordVectorsRate = 1000;
+if params.updateWordVectors && params.updateWordVectorsRate > 1; disp(['word vectors update rate: ' num2str(1/params.updateWordVectorsRate)]); end;
+params.numDistances = 5; %
+
+params.dropout = 0.5;  % 1 means no dropout
+if params.dropout ~= 1; disp(['dropout: ' num2str(params.dropout)]); end;
+params.beta = 1; % loss parameter (1 means no weighting)
+params.useExt = false; if params.useExt; disp('using extended dimensions'); end;
+params.extDim = 0; % this will be updated after loading the data
+params.updateExt = false; if params.updateExt; disp('updating extended dimensions'); end;
+filterWordVectorsFlag = true; % filter word vectors based on train/test data
+
+% TODO remove?
+params.useUnk = false; if params.useUnk; disp('using UNK word vector'); end;
+
+% read filenames from file
+filenames = defineFilenames(language);
+
+
+% TODO change? in all code files
+model = 6; % HPCD model; do not change
+if model == 6
+    disp('model: HPCD');
+else
+    disp('models other than HPCD (6) are not supported in this version');
+    return;
+end
+
+%% load data
+if loadDataFlag
+    disp('loading data');
+    disp('loading word vectors');
+    wordVectors = loadWordVectors(filenames.wordVectorsFilename, params.inputSize);
+    if params.useExt
+        disp('loading Wordnet/Verbnet');
+        [vn, wn] = loadVerbnetWordnet(filenames.vnDir, filenames.wnDir, params.language);
+    end
+
+    % filter word vectors
+    if filterWordVectorsFlag
+        wordVecotrs = filterWordVectors(wordVectors, model, params, filenames);
+    end
+    % load train data
+    if params.useExt 
+        trainData = loadData(model, params, filenames.trainFilePref, wordVectors, vn, wn);
+        if strcmpi(language, 'arabic')
+            params.pos2idx = trainData.pos2idx;
+            params.extDim = 2 + params.pos2idx.Count + 1 + 1 + wn.hypernym2idx.Count; % head pos, next pos, verb-prep, verbalnoun-prep, word hypernym
+        elseif strcmpi(language, 'english')
+            params.extDim = 1 + wn.nounhypernym2idx.Count; % verb-prep, noun hypernym
+        else
+            error('Error', ['using extended dimensions not supported for language ' language]);
+        end
+        params.extDim = double(params.extDim);
+    else
+        trainData = loadData(model, params, filenames.trainFilePref, wordVectors);
+    end
+    if params.updateWordVectors; params.vocabSize = size(trainData.wordVectorsMat, 2); end; 
+end
+                        
+
+
+%% check numerical gradient
+if checkGradientFlag
+    if params.updateWordVectors
+        disp('Error: cannot check numerical gradient while updating word vectors');
+        return;
+    end
+    disp('checking gradient');
+    % initialize parameters
+    disp('initializing parameters');
+    theta = initializeParameters(params, model);
+
+    disp('computing cost and gradient by propagation');
+    [cost, grad] = functionCostGrad(theta, model, params, trainData);
+
+    disp('computing numerical gradient');
+    numgrad = computeNumericalGradient( @(x) functionCostGrad(x, model, params, trainData), theta);
+
+    % Use this to visually compare the gradients side by side
+    disp([numgrad grad]); 
+
+    % Compare numerically computed gradients with the ones obtained from backpropagation
+    compareDisplayGradients(numgrad, grad, model, params);
+end
+
+%% initialize parameters
+disp('initializing parameters');
+theta = initializeParameters(params, model);
+if usePretrainedParams
+    disp(['loading parameters from file ' filenames.paramsFile]);
+    theta = loadParameters(filenames.paramsFile, model);
+end
+if params.updateWordVectors
+    disp('adding word vectors to theta (for updating word vectors)');
+    if usePretrainedWordVectors
+        s = load(filenames.updatedWordVectorsFile);
+        theta = [theta(:); s.updatedWordVectorsMat(:)];
+    else
+        theta = [theta(:); trainData.wordVectorsMat(:)];
+    end
+end
+
+% you shouldn't need to change most of these options
+trainParams.trainingMethod = 'adagrad'; disp(['optimizer: ' trainParams.trainingMethod]); 
+trainParams.initLearningRate = 1;
+trainParams.epochs = 100; % you may want to change this option
+trainParams.batchsize = 500;
+datasize = size(trainData.heads, 3);
+trainParams.iters = 1; % iters per batch
+trainParams.backpocket = true; % use the best model seen during training
+trainParams.usePretrainedSumSquares = usePretrainedSumSquares;
+trainParams.quiet = false;
+
+
+%% train
+if trainFlag
+    disp('training');
+    opttheta = trainModel(theta, trainData, wordVectors, params, model, trainParams, filenames);
+end
+
+
+%% test
+if testFlag
+    disp('testing');
+    if params.useExt
+        testModel(opttheta, model, params, wordVectors, trainData, filenames, vn, wn);
+    else
+        testModel(opttheta, model, params, wordVectors, trainData, filenames);
+    end    
+end
+
+
+end
