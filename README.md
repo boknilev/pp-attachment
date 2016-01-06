@@ -13,7 +13,7 @@ This repository contains sample code for our TACL paper on PP attachment:
 $ cd data
 $ gunzip vectors.english.100.txt.gz
 $ gunzip vectors.arabic.100.txt.gz
-
+```
 
 3. Run Matlab from the code directory:
 ```
