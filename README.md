@@ -9,26 +9,26 @@ This repository contains sample code for our TACL paper on PP attachment:
 1. Download code and data into your working folder.
 
 2. Unzip word vector files in the data directory:
-```
-$ cd data
-$ gunzip vectors.english.100.txt.gz
-$ gunzip vectors.arabic.100.txt.gz
-```
+    ```
+    $ cd data
+    $ gunzip vectors.english.100.txt.gz
+    $ gunzip vectors.arabic.100.txt.gz
+    ```
 
 3. Run Matlab from the code directory:
-```
-$ cd code
-$ matlab
-```
+    ```
+    $ cd code
+    $ matlab
+    ```
 
 4. In Matlab, run the runner file:
-```matlab
->> run('english');
-```
+    ```matlab
+    >> run('english');
+    ```
 or 
-```matlab
->> run('arabic');
-```
+    ```matlab
+    >> run('arabic');
+    ```
 
 
 
@@ -36,19 +36,22 @@ or
 Controlling the word vector representation can be done in three ways.
 
 1. Using a different initial word vector file:
-Change the wordVectorsFilename in defineFilenames.m to point to the word vector file of your choice.
+    
+    Change the wordVectorsFilename in defineFilenames.m to point to the word vector file of your choice.
 
-You can experiment with our Arabic syntactic vectors, available at:
-http://groups.csail.mit.edu/rbg/code/pp/arabic-syntactic-vecs
+    You can experiment with our Arabic syntactic vectors, available at:
+    http://groups.csail.mit.edu/rbg/code/pp/arabic-syntactic-vecs
 
 2. Relearning word vectors during training: 
-Edit run.m and set:
-```matlab
-params.updateWordVectors = true;
-```
+    
+    Edit run.m and set:
+    ```matlab
+    params.updateWordVectors = true;
+    ```
 
 3. Enriching word vectors with other resources:
-This option requires using Verbnet and Wordnet, which are not provided with the current distribution. Get in touch if you would like to explore this option.
+    
+    This option requires using Verbnet and Wordnet, which are not provided with the current distribution. Get in touch if you would like to explore this option.
 
 
 ## Compositional architectures
