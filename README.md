@@ -90,7 +90,7 @@ If you are experimenting with a different language, you will also need to provid
 We would be happy to hear about your experiments with different datasets.  
 
 
-## Citating
+## Citing
 If you use this code your work, please cite the following paper:
 
 Yonatan Belinkov, Tao Lei, Regina Barzilay, and Amir Globerson. 2014. Exploring Compositional Architectures and Word Vector Representations for Prepositional Phrase Attachment. Transactions of the Association for Computational Linguistics (TACL).
