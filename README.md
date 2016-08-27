@@ -96,6 +96,19 @@ If you use this code your work, please cite the following paper:
 Yonatan Belinkov, Tao Lei, Regina Barzilay, and Amir Globerson. 2014. Exploring Compositional Architectures and Word Vector Representations for Prepositional Phrase Attachment. Transactions of the Association for Computational Linguistics (TACL).
 https://tacl2013.cs.columbia.edu/ojs/index.php/tacl/article/download/488/100
 
+```bib
+@article{belinkovTACL:2014,
+	author = {Yonatan Belinkov and Tao Lei and Regina Barzilay and Amir Globerson},
+	title = {Exploring Compositional Architectures and Word Vector Representations for Prepositional Phrase Attachment},
+	journal = {Transactions of the Association for Computational Linguistics},
+	volume = {2},
+	year = {2014},
+	issn = {2307-387X},
+	url = {https://tacl2013.cs.columbia.edu/ojs/index.php/tacl/article/view/488},
+	pages = {561--572}
+}
+```
+
 
 
 ## Questions?
