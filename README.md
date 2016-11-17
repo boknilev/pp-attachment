@@ -76,13 +76,13 @@ usePretrainedWordVectors = true;
 ## Experimenting with your own PP attachment dataset
 This distribution comes with our PP attachment datasets for Arabic (pp-data-arabic) and English (pp-data-english). If you would like to experiment with your own dataset, you will need to prepare it in a certain format. The train/test files must have the following names and formats:
 
-<train/test suffix>.children.words - each line has one word which is the preposition's child
-<train/test suffix>.heads.words - each line has a space-delimited list of candidate heads 
-<train/test suffix>.pp.labels - each line has an integer indicating the gold head index (1-based)
-<train/test suffix>.pp.nheads - each line has an integer indicating the number of candidate 
-<train/test suffix>.pp.preps.words - each line has one word which is the preposition
+\<train/test suffix\>.children.words - each line has one word which is the preposition's child.  
+\<train/test suffix\>.heads.words - each line has a space-delimited list of candidate heads.  
+\<train/test suffix\>.pp.labels - each line has an integer indicating the gold head index (1-based).  
+\<train/test suffix\>.pp.nheads - each line has an integer indicating the number of candidate.  
+\<train/test suffix\>.pp.preps.words - each line has one word which is the preposition.  
 
-where <train/test suffix> is a prefix for the train/test file names. You will need to edit defineFilenames.m to point to these prefixes.
+where \<train/test suffix\> is a prefix for the train/test file names. You will need to edit defineFilenames.m to point to these prefixes.
 Have a look at the files under pp-data-english/arabic to see what the format looks like.
 
 If you are experimenting with a different language, you will also need to provide a new word vectors file and edit defineFilenames.m to point to it. 
