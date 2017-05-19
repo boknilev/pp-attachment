@@ -1,0 +1,29 @@
+# Author: Yonatan Belinkov
+# Date: September 8, 2015
+
+The files in this folder contain the PP attachment dataset used in our paper:
+
+Yonatan Belinkov, Tao Lei, Regina Barzilay, and Amir Globerson. 2014. Exploring Compositional Architectures and Word Vector Representations for Prepositional Phrase Attachment. Transactions of the Association for Computational Linguistics (TACL)
+
+Data format
+-----------
+There are train and test files, identified by different prefixes. Each line in the the files is a PP attachment instance, in the following format:
+
+<prefix>.preps.words - the preposition.
+<prefix>.children.words - the preposition's child.
+<prefix>.heads.words - the candidate heads for the PP.
+<prefix>.heads.pos - the part-of-speech of the candidate heads for the PP, where "1" is for verbs and "-1" is for nouns.
+<prefix>.heads.next.pos - the part-of-speech of the words following the candidate heads of the PP, in text format.
+<prefix>.labels - the gold head of the PP, indicated by an index specifying its position in the list of candidate heads (e.g. in <prefix>.heads.words)
+<prefix>.nheads - the number of candidate heads. 
+
+Citation
+--------
+If you use this dataset in your work, consider citing our paper:
+
+Yonatan Belinkov, Tao Lei, Regina Barzilay, and Amir Globerson. 2014. Exploring Compositional Architectures and Word Vector Representations for Prepositional Phrase Attachment. Transactions of the Association for Computational Linguistics (TACL)
+
+Disclaimer
+----------
+This dataset has been derived from the Penn Treebank and is distributed according to LDC policy that allows sharing derived data when the original data cannot be reconstructued from the derived data. 
+
